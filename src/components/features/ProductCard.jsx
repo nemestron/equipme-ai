@@ -1,68 +1,62 @@
 ﻿import React from 'react';
-import { Package, Tag, ThumbsUp } from 'lucide-react';
 import Card from '../common/Card';
 import CompatibilityBadge from './CompatibilityBadge';
+import { ExternalLink } from 'lucide-react';
+import { formatCurrency } from '../../utils/formatCurrency';
 
-/**
- * ProductCard Component
- * Purpose: Displays a single recommended product with AI context.
- * Props:
- * - product: Object containing name, price, description, reason, etc.
- */
 const ProductCard = ({ product }) => {
-  // Safe formatting for currency
-  const formattedPrice = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(product.price || 0);
-
   return (
-    <Card hoverable className="h-full flex flex-col">
-      {/* 1. Image Placeholder Area */}
-      <div className="h-48 bg-slate-100 flex items-center justify-center border-b border-slate-100 relative group overflow-hidden">
-        <Package className="h-12 w-12 text-slate-300 group-hover:scale-110 transition-transform duration-300" />
+    <Card className="h-full flex flex-col group hover:border-brand-200 transition-colors" hoverable={true}>
+      
+      {/* CONTENT SECTION (Expanded to fill full card) */}
+      <div className="p-6 flex flex-col flex-grow space-y-4">
         
-        {/* Category Tag Overlay */}
-        {product.category && (
-          <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md text-xs font-medium text-slate-600 shadow-sm border border-slate-200">
-            {product.category}
-          </div>
-        )}
-      </div>
-
-      {/* 2. Content Body */}
-      <div className="p-5 flex-1 flex flex-col">
-        {/* Header */}
-        <div className="flex justify-between items-start gap-2 mb-2">
-          <div>
-            <h3 className="font-semibold text-slate-900 leading-tight line-clamp-2">
+        {/* Header: Title & Price */}
+        <div className="flex justify-between items-start gap-4">
+          <div className="space-y-1">
+            <h3 className="font-semibold text-lg text-slate-900 leading-tight group-hover:text-brand-600 transition-colors">
               {product.name}
             </h3>
-            {product.brand && (
-              <p className="text-xs text-slate-500 mt-1">{product.brand}</p>
-            )}
+            <p className="text-xs text-slate-500 font-medium uppercase tracking-wide">
+              {product.brand} • {product.category}
+            </p>
           </div>
-          <span className="font-bold text-slate-900 shrink-0">
-            {formattedPrice}
-          </span>
+          
+          {/* Relocated Price Display */}
+          <div className="text-lg font-bold text-slate-900 shrink-0">
+            {formatCurrency(product.price)}
+          </div>
         </div>
 
         {/* Description */}
-        <p className="text-sm text-slate-600 mb-4 line-clamp-2 flex-grow">
+        <p className="text-sm text-slate-600 leading-relaxed flex-grow">
           {product.description}
         </p>
 
-        {/* AI Context Section */}
-        <div className="space-y-3 pt-4 border-t border-slate-100">
-          <CompatibilityBadge type={product.compatibility || 'compatible'} />
+        {/* Metadata & Footer */}
+        <div className="pt-4 border-t border-slate-100 space-y-3 mt-auto">
           
-          {/* Why Included Snippet */}
-          <div className="flex items-start gap-2 text-xs text-slate-500 bg-slate-50 p-2 rounded-lg">
-            <ThumbsUp size={14} className="text-brand-500 mt-0.5 shrink-0" />
-            <span className="italic">
-              &quot;{product.whyIncluded || 'Recommended for your goal'}&quot;
-            </span>
+          {/* Compatibility & Reason */}
+          <div className="space-y-2">
+            <CompatibilityBadge type={product.compatibility} />
+            
+            {product.whyIncluded && (
+              <p className="text-xs text-slate-500 italic bg-slate-50 p-2.5 rounded border border-slate-100">
+                "{product.whyIncluded}"
+              </p>
+            )}
           </div>
+
+          {/* Search Button */}
+          <a 
+            href={`https://www.google.com/search?q=${encodeURIComponent(product.brand + ' ' + product.name)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center w-full py-2 text-xs font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200 group-hover:border-slate-300"
+          >
+            <ExternalLink size={14} className="mr-1.5" />
+            Find Online
+          </a>
         </div>
       </div>
     </Card>

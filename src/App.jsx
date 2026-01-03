@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, AlertCircle } from 'lucide-react';
 
 // Layout
 import Header from './components/layout/Header';
@@ -15,34 +15,42 @@ import BudgetSlider from './components/features/BudgetSlider';
 import BundleDisplay from './components/features/BundleDisplay';
 import PriceSummary from './components/features/PriceSummary';
 
-// Utils & Constants
-import { APP_CONFIG } from './utils/constants';
+// Hooks & Constants
+import { useGemini } from './hooks/useGemini';
+import { useBudget } from './hooks/useBudget';
 
 function App() {
-  // --- STATE MANAGEMENT  ---
+  // --- STATE MANAGEMENT ---
+  
+  // 1. Goal State (Local)
   const [goal, setGoal] = useState('');
-  const [budget, setBudget] = useState(APP_CONFIG.DEFAULT_BUDGET);
-  const [bundle, setBundle] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+
+  // 2. Budget State (Persisted via Hook)
+  const { 
+    budget, 
+    setBudget, 
+    min, 
+    max, 
+    step 
+  } = useBudget();
+
+  // 3. AI Generation State (Gemini Hook)
+  const { 
+    bundle, 
+    isLoading, 
+    error, 
+    generateBundle 
+  } = useGemini();
 
   // --- HANDLERS ---
-  
-  // Temporary Mock Handler (Phase 3 will replace this with AI)
+
   const handleGenerate = async () => {
     // Basic Validation
     if (!goal.trim()) return;
 
-    setIsLoading(true);
-    setError(null);
-    setBundle(null); // Reset previous results
-
-    // Simulate Network Delay
-    setTimeout(() => {
-      setIsLoading(false);
-      // For now, we remain in empty state to test the 'Loading' UI transition
-      console.log('Mock generation triggered for:', { goal, budget });
-    }, 2000);
+    // Trigger AI Service
+    // The hook handles loading states and error catching internally
+    await generateBundle(goal, budget);
   };
 
   return (
@@ -80,21 +88,29 @@ function App() {
               <BudgetSlider 
                 value={budget} 
                 onChange={setBudget}
-                min={APP_CONFIG.MIN_BUDGET}
-                max={APP_CONFIG.MAX_BUDGET}
-                step={APP_CONFIG.BUDGET_STEP}
+                min={min}
+                max={max}
+                step={step}
               />
+
+              {/* Error Alert Area */}
+              {error && (
+                <div className="flex items-center justify-center gap-2 text-red-600 bg-red-50 p-3 rounded-lg border border-red-100 animate-fadeIn">
+                  <AlertCircle size={18} />
+                  <span className="text-sm font-medium">{error}</span>
+                </div>
+              )}
 
               <div className="flex justify-center pt-4">
                 <Button 
                   size="lg" 
                   onClick={handleGenerate}
                   isLoading={isLoading}
-                  disabled={!goal.trim()}
+                  disabled={!goal.trim() || isLoading}
                   className="w-full sm:w-auto min-w-[200px] shadow-brand-500/20 shadow-lg"
                 >
                   <Sparkles className="mr-2 h-5 w-5" />
-                  Generate Bundle
+                  {isLoading ? 'Curating Bundle...' : 'Generate Bundle'}
                 </Button>
               </div>
             </div>
@@ -102,7 +118,7 @@ function App() {
           </div>
 
           {/* RESULTS SECTION */}
-          {/* Renders loading skeletons or the actual bundle grid */}
+          {/* Renders loading skeletons, empty state, or the actual bundle grid */}
           <BundleDisplay 
             bundle={bundle} 
             isLoading={isLoading} 
@@ -114,8 +130,8 @@ function App() {
       <Footer />
 
       {/* STICKY SUMMARY BAR */}
-      {/* Conditionally rendered only when we have a bundle */}
-      {bundle && (
+      {/* Conditionally rendered only when we have a valid bundle */}
+      {bundle && !isLoading && (
         <PriceSummary 
           totalCost={bundle.totalCost || 0}
           budget={budget}
