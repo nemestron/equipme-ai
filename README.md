@@ -2,6 +2,8 @@
 
 **Your Perfect Setup, Curated by AI.**
 
+> **🔴 LIVE DEMO:** [https://equipme-ai.vercel.app/](https://equipme-ai.vercel.app/)
+
 EquipMe AI is an intelligent product bundle generator that eliminates the fatigue of researching gear. Whether you want to start vlogging, build a home gym, or go camping, EquipMe uses Google Gemini 2.5 Flash model to curate compatible, budget-aware shopping lists instantly.
 
 ![Project Status](https://img.shields.io/badge/status-live-success)
@@ -11,7 +13,7 @@ EquipMe AI is an intelligent product bundle generator that eliminates the fatigu
 
 * **AI-Powered Curation:** Generates context-aware product bundles using Gemini 2.5 Flash.
 * **Smart Budgeting:** Strict adherence to user-defined budget constraints.
-* **Compatibility Checks:** Ensures recommended items work together.
+* **Compatibility Checks:** Ensures recommended items work together (e.g., cameras and lenses).
 * **Real-Time Feedback:** Instant validation for inputs and edge cases.
 * **Responsive Design:** Fully optimized for Mobile, Tablet, and Desktop.
 * **Dark Mode:** Built-in theme switching with persistence.
@@ -53,6 +55,15 @@ EquipMe AI is an intelligent product bundle generator that eliminates the fatigu
     ```bash
     npm run dev
     ```
+
+## 🧠 Engineering Concepts
+
+This project demonstrates several advanced Product Engineering concepts:
+
+* **Zero-Cost Architecture:** Leverages free-tier infrastructure (Vercel, Gemini Flash) for a sustainable MVP.
+* **Latency Management:** Uses optimistic UI updates and skeleton loaders to minimize perceived wait times.
+* **System Prompting:** Utilizes strict JSON schema enforcement to prevent AI hallucinations.
+* **Component Composition:** Built on a modular "Atomic Design" inspired component library.
 
 ## 👤 Author
 
