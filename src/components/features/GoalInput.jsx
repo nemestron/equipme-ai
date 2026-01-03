@@ -1,55 +1,68 @@
 ﻿import React from 'react';
-import { Search } from 'lucide-react';
-import Card from '../common/Card';
+import Input from '../common/Input';
+import { Search, AlertCircle } from 'lucide-react';
+import { POPULAR_GOALS } from '../../utils/constants';
 
-/**
- * GoalInput Component
- * Purpose: Primary user input for defining the product search goal.
- * Features: Large typography, icon prefix, card-like container.
- */
-const GoalInput = ({ value, onChange, disabled = false }) => {
+const GoalInput = ({ value, onChange, disabled }) => {
+  const isTooShort = value.length > 0 && value.length < 3;
+
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <label 
-        htmlFor="goal-input" 
-        className="block text-sm font-medium text-slate-700 mb-2 ml-1"
-      >
-        What do you want to do?
-      </label>
-      
-      <div className="relative group">
-        {/* Icon Prefix */}
-        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <Search className="h-6 w-6 text-slate-400 group-focus-within:text-brand-500 transition-colors" />
-        </div>
-
-        {/* Hero Input */}
-        <input
-          id="goal-input"
-          type="text"
+    <div className="space-y-4">
+      <div className="relative">
+        <Input
+          label="What do you want to do?"
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          placeholder="e.g., Start Vlogging, Build a PC, Go Camping..."
           disabled={disabled}
-          className="
-            block w-full pl-12 pr-4 py-4
-            bg-white border-2 border-slate-200 rounded-xl
-            text-lg md:text-xl font-medium text-slate-900 placeholder-slate-400
-            shadow-sm transition-all duration-200
-            focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 focus:outline-none
-            disabled:bg-slate-50 disabled:text-slate-500
-          "
-          placeholder="e.g., Start Vlogging, Home Office Setup..."
+          className={`pl-12 py-4 text-lg shadow-sm transition-colors 
+            dark:bg-slate-800 dark:border-slate-700 dark:text-white dark:placeholder-slate-500
+            ${isTooShort ? 'border-amber-300 focus:border-amber-500' : ''}`}
+          aria-invalid={isTooShort}
         />
-        
-        {/* Helper Text (optional visual flair) */}
-        <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-          <span className="text-xs text-slate-400 font-medium bg-slate-100 px-2 py-1 rounded hidden sm:block">
-            AI Powered
-          </span>
+        <Search 
+          className="absolute left-4 top-[2.85rem] text-slate-400" 
+          size={22} 
+        />
+        <div className="absolute right-3 top-[2.5rem]">
+           <span className="text-xs font-semibold px-2 py-1 rounded-md uppercase tracking-wider border
+             text-brand-600 bg-brand-50 border-brand-100
+             dark:text-brand-400 dark:bg-brand-900/30 dark:border-brand-800">
+             AI Powered
+           </span>
+        </div>
+      </div>
+
+      {isTooShort && (
+        <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 text-sm animate-fadeIn">
+          <AlertCircle size={14} />
+          <span>Please enter at least 3 characters.</span>
+        </div>
+      )}
+
+      <div>
+        <p className="text-xs font-medium mb-2 uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          Popular Ideas
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {POPULAR_GOALS.map((goal) => (
+            <button
+              key={goal}
+              onClick={() => onChange(goal)}
+              disabled={disabled}
+              className="px-3 py-1.5 text-sm rounded-full border transition-all duration-200
+                bg-white border-slate-200 text-slate-600 
+                hover:border-brand-300 hover:text-brand-600 hover:bg-brand-50 
+                focus:outline-none focus:ring-2 focus:ring-brand-500
+                dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300
+                dark:hover:bg-slate-700 dark:hover:text-white"
+            >
+              {goal}
+            </button>
+          ))}
         </div>
       </div>
     </div>
   );
 };
-
 export default GoalInput;

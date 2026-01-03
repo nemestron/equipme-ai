@@ -20,9 +20,10 @@ export const APP_CONFIG = {
 
 export const POPULAR_GOALS = [
   "Start Vlogging",
-  "Home Office Setup",
-  "Learn Photography",
-  "Podcast Studio",
+  "Home Office",
   "Gaming Setup",
-  "Fitness Journey",
+  "Podcast Studio",
+  "Fitness Gym",
+  "Camping Trip",
+  "Coffee Station"
 ];

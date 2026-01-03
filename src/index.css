@@ -2,12 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global Styles & Reset [cite: 400-407] */
 @layer base {
   html {
+    /* Smooth scrolling for anchor links (e.g., "How it Works") */
     scroll-behavior: smooth;
+    /* Better text rendering on macOS/iOS */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900;
   }
   
-  body {
-    @apply antialiased text-slate-900 bg-slate-50;
+  /* Custom Scrollbar for Webkit browsers */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-100;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 rounded-full hover:bg-slate-400 transition-colors;
+  }
+}
+
+/* Animation Utilities */
+@layer utilities {
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }

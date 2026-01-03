@@ -8,14 +8,25 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@components': path.resolve(__dirname, './src/components'),
-      '@hooks': path.resolve(__dirname, './src/hooks'),
-      '@services': path.resolve(__dirname, './src/services'),
-      '@utils': path.resolve(__dirname, './src/utils'),
     },
   },
-  server: {
-    port: 3000,
-    open: true,
-  }
+  build: {
+    // Optimization: Use ES2020 to avoid legacy polyfills
+    target: 'es2020',
+    // Optimization: Minify with esbuild (faster/smaller than terser)
+    minify: 'esbuild',
+    // Optimization: CSS Code Splitting
+    cssCodeSplit: true,
+    rollupOptions: {
+      output: {
+        // STRATEGY: Vendor Chunk Splitting
+        // Forces libraries into their own cacheable files
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-ui': ['lucide-react'],
+          'vendor-ai': ['@google/generative-ai'],
+        },
+      },
+    },
+  },
 })

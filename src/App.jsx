@@ -54,12 +54,17 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
+    <div className="min-h-screen flex flex-col font-sans transition-colors duration-300 bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      {/* Skip Link for Keyboard Users */}
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-brand-600 text-white p-4 rounded-lg z-50">
+        Skip to main content
+      </a>
+
       <Header />
 
       {/* Main Content Wrapper */}
       {/* pt-20 accounts for fixed header (h-16 + spacing) */}
-      <main className="flex-1 pt-20 pb-12">
+      <main id="main-content" className="flex-1 pt-20 pb-12 outline-none" tabIndex="-1">
         <Container>
           
           {/* HERO SECTION */}
@@ -67,18 +72,22 @@ function App() {
             
             {/* Headlines */}
             <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
+              <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                 Your perfect setup, <br />
                 <span className="text-brand-600">curated by AI.</span>
               </h1>
-              <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
                 Tell us what you want to do, set your budget, and let EquipMe 
                 find the compatible gear you need to get started.
               </p>
             </div>
 
             {/* Input Section */}
-            <div className="space-y-8 bg-white/50 backdrop-blur-sm p-6 rounded-2xl border border-slate-200/60 shadow-sm">
+            <div 
+              className="space-y-8 p-6 rounded-2xl backdrop-blur-sm transition-colors duration-300 bg-white/50 border border-slate-200/60 dark:bg-slate-900/50 dark:border-slate-800 shadow-sm"
+              role="form"
+              aria-label="Bundle Configuration"
+            >
               <GoalInput 
                 value={goal} 
                 onChange={setGoal} 
@@ -93,10 +102,14 @@ function App() {
                 step={step}
               />
 
-              {/* Error Alert Area */}
+              {/* Error Alert Area - ACCESSIBILITY UPGRADE: role="alert" */}
               {error && (
-                <div className="flex items-center justify-center gap-2 text-red-600 bg-red-50 p-3 rounded-lg border border-red-100 animate-fadeIn">
-                  <AlertCircle size={18} />
+                <div 
+                  role="alert" 
+                  aria-live="assertive"
+                  className="flex items-center justify-center gap-2 text-red-600 bg-red-50 p-3 rounded-lg border border-red-100 animate-fadeIn"
+                >
+                  <AlertCircle size={18} aria-hidden="true" />
                   <span className="text-sm font-medium">{error}</span>
                 </div>
               )}
@@ -108,8 +121,9 @@ function App() {
                   isLoading={isLoading}
                   disabled={!goal.trim() || isLoading}
                   className="w-full sm:w-auto min-w-[200px] shadow-brand-500/20 shadow-lg"
+                  aria-label={isLoading ? "Curating your bundle, please wait" : "Generate Bundle"}
                 >
-                  <Sparkles className="mr-2 h-5 w-5" />
+                  <Sparkles className="mr-2 h-5 w-5" aria-hidden="true" />
                   {isLoading ? 'Curating Bundle...' : 'Generate Bundle'}
                 </Button>
               </div>
@@ -145,3 +159,4 @@ function App() {
 }
 
 export default App;
+

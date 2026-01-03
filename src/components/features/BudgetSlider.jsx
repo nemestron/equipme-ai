@@ -1,36 +1,41 @@
 ﻿import React from 'react';
+import { formatCurrency } from '../../utils/formatCurrency';
+import { Info } from 'lucide-react';
 
-/**
- * BudgetSlider Component
- * Purpose: Allows user to select a budget constraint.
- * Features: Visual range input, currency formatting, min/max labels.
- */
-const BudgetSlider = ({ value, onChange, min = 100, max = 5000, step = 50 }) => {
-  
-  // Local currency formatter
-  const formatMoney = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
-    }).format(amount);
+const BudgetSlider = ({ value, onChange, min, max, step }) => {
+  // Edge Case Logic: Detect if budget is at the absolute minimum
+  const isMinBudget = value <= min;
+
+  const handleSliderChange = (e) => {
+    onChange(Number(e.target.value));
   };
 
-  // Calculate percentage for background gradient effect (optional visual polish)
-  const percentage = ((value - min) / (max - min)) * 100;
+  // Calculate progress percentage for the slider background
+  const progress = ((value - min) / (max - min)) * 100;
 
   return (
-    <div className="w-full max-w-2xl mx-auto mt-8 p-6 bg-white rounded-xl border border-slate-200 shadow-sm">
-      <div className="flex justify-between items-end mb-4">
+    <div className="space-y-4">
+      {/* Header with Value Display */}
+      <div className="flex justify-between items-end">
         <label htmlFor="budget-slider" className="text-sm font-medium text-slate-700">
           Your Budget
         </label>
-        <div className="text-2xl font-bold text-brand-600 tracking-tight">
-          {formatMoney(value)}
+        <div className="text-2xl font-bold text-brand-600">
+          {formatCurrency(value)}
         </div>
       </div>
 
+      {/* Range Input Container */}
       <div className="relative h-6 flex items-center">
+        {/* Custom Track Background */}
+        <div className="absolute w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-brand-500 transition-all duration-150 ease-out"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+
+        {/* The Actual Input */}
         <input
           id="budget-slider"
           type="range"
@@ -38,19 +43,36 @@ const BudgetSlider = ({ value, onChange, min = 100, max = 5000, step = 50 }) => 
           max={max}
           step={step}
           value={value}
-          onChange={(e) => onChange(Number(e.target.value))}
-          className="
-            w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer
-            accent-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/20
-          "
+          onChange={handleSliderChange}
+          className="absolute w-full h-full opacity-0 cursor-pointer z-10"
+          aria-valuemin={min}
+          aria-valuemax={max}
+          aria-valuenow={value}
+          aria-label="Budget Slider"
+        />
+
+        {/* Custom Thumb (Visual Only - follows progress) */}
+        <div 
+          className="absolute h-5 w-5 bg-white border-2 border-brand-500 rounded-full shadow-md pointer-events-none transition-all duration-150 ease-out"
+          style={{ left: `calc(${progress}% - 10px)` }}
         />
       </div>
 
-      <div className="flex justify-between mt-2 text-xs font-medium text-slate-400">
-        <span>{formatMoney(min)}</span>
-        <span>{formatMoney(max / 2)}</span>
-        <span>{formatMoney(max)}+</span>
+      {/* Labels & Edge Case Warnings */}
+      <div className="flex justify-between text-xs text-slate-400 font-medium">
+        <span>{formatCurrency(min)}</span>
+        <span>{formatCurrency(max)}+</span>
       </div>
+
+      {/* Minimum Budget Warning */}
+      {isMinBudget && (
+        <div className="flex items-start gap-2 p-3 bg-amber-50 rounded-lg border border-amber-100 text-amber-700 text-xs animate-fadeIn">
+          <Info size={14} className="mt-0.5 shrink-0" />
+          <p>
+            With a strict budget of {formatCurrency(min)}, recommendations may be limited to essential items only.
+          </p>
+        </div>
+      )}
     </div>
   );
 };
