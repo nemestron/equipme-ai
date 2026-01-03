@@ -1,5 +1,5 @@
-﻿/** @type {import('tailwindcss').Config} */
-export default {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,8 +7,6 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Custom grayscale palette (slate is default but good to be explicit if needed)
-        // Accent color definition
         brand: {
           50: '#eff6ff',
           100: '#dbeafe',
@@ -16,7 +14,7 @@ export default {
           300: '#93c5fd',
           400: '#60a5fa',
           500: '#3b82f6',
-          600: '#2563eb', // Primary action color [cite: 192]
+          600: '#2563eb', 
           700: '#1d4ed8',
           800: '#1e40af',
           900: '#1e3a8a',
