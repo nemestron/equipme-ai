@@ -1,0 +1,4 @@
+﻿User-agent: *
+Allow: /
+
+Sitemap: https://equipme-ai.vercel.app/sitemap.xml
